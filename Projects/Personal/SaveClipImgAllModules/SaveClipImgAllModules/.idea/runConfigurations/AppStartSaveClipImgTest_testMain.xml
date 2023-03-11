@@ -1,0 +1,18 @@
+<component name="ProjectRunConfigurationManager">
+    <configuration default="false" factoryName="JUnit" folderName="SaveClipImg" name="AppStartSaveClipImgTest.testMain" nameIsGenerated="true" type="JUnit">
+        <module name="SaveClipImgAllModules.SaveClipImg.test"/>
+        <extension name="coverage">
+            <pattern>
+                <option name="PATTERN" value="com.personal.scripts.gen.save_clip_img.*"/>
+                <option name="ENABLED" value="true"/>
+            </pattern>
+        </extension>
+        <option name="PACKAGE_NAME" value="com.personal.scripts.gen.save_clip_img"/>
+        <option name="MAIN_CLASS_NAME" value="com.personal.scripts.gen.save_clip_img.AppStartSaveClipImgTest"/>
+        <option name="METHOD_NAME" value="testMain"/>
+        <option name="TEST_OBJECT" value="method"/>
+        <method v="2">
+            <option enabled="true" name="Make"/>
+        </method>
+    </configuration>
+</component>
