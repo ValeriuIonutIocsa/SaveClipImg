@@ -5,6 +5,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
@@ -18,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Locale;
 
@@ -134,12 +136,8 @@ final class AppStartSaveClipImg {
 			final Transferable content,
 			final Path outputImagePath) throws Exception {
 
-		final BufferedImage img = (BufferedImage) content.getTransferData(DataFlavor.imageFlavor);
-		final File outfile = outputImagePath.toFile();
-		final boolean success = ImageIO.write(img, "png", outfile);
-		if (!success) {
-			throw new Exception();
-		}
+		final BufferedImage bufferedImage = (BufferedImage) content.getTransferData(DataFlavor.imageFlavor);
+		saveBufferedImage(bufferedImage, outputImagePath);
 	}
 
 	private static void saveImageHtmlFlavor(
@@ -160,14 +158,35 @@ final class AppStartSaveClipImg {
 				noImageFound();
 
 			} else {
-				final String imageUrl = htmlString.substring(0, indexOf);
-                System.out.println("--> downloading image from URL:");
-                System.out.println(imageUrl);
-				try (InputStream inputStream = new URL(imageUrl).openStream()) {
+				final String imageSrc = htmlString.substring(0, indexOf);
+				final String base64Prefix = "data:image/png;base64,";
+				if (imageSrc.startsWith(base64Prefix)) {
 
-					Files.copy(inputStream, outputImagePath, StandardCopyOption.REPLACE_EXISTING);
+					final String imageString = imageSrc.substring(base64Prefix.length());
+					final byte[] imageBytes = Base64.getDecoder().decode(imageString);
+					final BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imageBytes));
+					saveBufferedImage(bufferedImage, outputImagePath);
+
+				} else {
+					System.out.println("--> downloading image from URL:");
+					System.out.println(imageSrc);
+					try (InputStream inputStream = new URL(imageSrc).openStream()) {
+
+						Files.copy(inputStream, outputImagePath, StandardCopyOption.REPLACE_EXISTING);
+					}
 				}
 			}
+		}
+	}
+
+	private static void saveBufferedImage(
+			final BufferedImage bufferedImage,
+			final Path outputImagePath) throws Exception {
+
+		final File outfile = outputImagePath.toFile();
+		final boolean success = ImageIO.write(bufferedImage, "png", outfile);
+		if (!success) {
+			throw new Exception();
 		}
 	}
 
