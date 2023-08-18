@@ -47,9 +47,9 @@ dependencies {
         }
     }
 
-    testFixturesImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
-    testFixturesRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
-    testFixturesRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.9.3'
+    testFixturesImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
+    testFixturesRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
+    testFixturesRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.0'
 
     for (String testCompileClassPath : testCompileClassPaths) {
 
@@ -64,9 +64,9 @@ dependencies {
         }
     }
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.9.3'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.10.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.10.0'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.10.0'
 
     for (String testCompileClassPath : testCompileClassPaths) {
 
@@ -114,6 +114,12 @@ task fatJar(type: Jar, dependsOn: compileJava) {
                         'Implementation-Version': project.version,
                         'Build-Time': new Date().format('dd MMM yyyy, hh:mm:ss zzz'))
             }
+        } else {
+            manifest {
+                attributes('Implementation-Title': project.name,
+                        'Implementation-Version': project.version,
+                        'Build-Time': new Date().format('dd MMM yyyy, hh:mm:ss zzz'))
+            }
         }
     } catch (Exception ignored) {
     }
@@ -136,7 +142,7 @@ task fatJar(type: Jar, dependsOn: compileJava) {
         if (otherDestDir != destDir) {
             copyFile(destDir.toString(), otherDestDir.toString(), archiveFileName.get().toString())
         }
-        if (project.hasProperty('covertToExe') && covertToExe) {
+        if (project.hasProperty('convertToExe') && convertToExe) {
             final File wrapperScriptFile = new File((String) "${destDir}/wrapper/Wrapper.java")
             if (wrapperScriptFile.exists()) {
                 exec {
@@ -392,7 +398,7 @@ test.onlyIf { ! Boolean.getBoolean('skip.tests') }
 
 test {
     useJUnitPlatform()
-    maxHeapSize = '8g'
+    maxHeapSize = '12g'
     outputs.upToDateWhen { false }
     testLogging {
         events "passed", "skipped", "failed", "standardOut", "standardError"
